@@ -59,8 +59,12 @@ public class GooglePlacesMap extends Activity implements
 
 		// Acquire a reference to the system Location Manager
 		try {
-			locationManager = (LocationManager) this
-					.getSystemService(Context.LOCATION_SERVICE);
+
+		String bestProvider;
+		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		Criteria criteria = new Criteria();
+		bestProvider = locationManager.getBestProvider(criteria, false);
+		Location location = locationManager.getLastKnownLocation(bestProvider);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
