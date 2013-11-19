@@ -103,7 +103,6 @@ public class GooglePlacesMap extends Activity implements
 	private String getMapHTML(double latitude, double longitude, String type,
 			int milesAway) {
 		String radius;
-		final int meters = 1609;
 		radius = Integer.toString(1609 * milesAway);
 		String googleCoordinates = Double.toString(latitude) + ","
 				+ Double.toString(longitude);
