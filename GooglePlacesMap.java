@@ -1,20 +1,14 @@
-/* GooglePlacesMap.java
- * Electric Sheep - K.Hall, C.Munoz, A.Reaves
- * Used with Google Maps activity page to display map of user selected category
- *   and ListView of places
- */
-
-package com.android.electricsheep.townportal;
-
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -28,9 +22,13 @@ import android.widget.Toast;
 public class GooglePlacesMap extends Activity implements
 		AdapterView.OnItemSelectedListener, ListView.OnItemClickListener,
 		View.OnClickListener {
-
+	
+	
+	
 	public double latitude = 30.205971;
 	public double longitude = -85.858862;
+
+	LocationManager locationManager;
 	public String type = "restaurant";
 	public int milesAway = 10;
 	private boolean firstTime = true;
@@ -43,7 +41,6 @@ public class GooglePlacesMap extends Activity implements
 	ListView lv = null;
 	ArrayAdapter<Place> arrayAdapter = null;
 
-	private LocationManager locationManager;
 	private Spinner spinner;
 	private Location locationDetails;
 	private String geoLocation;
@@ -51,7 +48,7 @@ public class GooglePlacesMap extends Activity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
+		
 		Bundle b = getIntent().getExtras();
 		type = b.getString("type");
 		super.onCreate(savedInstanceState);
@@ -59,19 +56,20 @@ public class GooglePlacesMap extends Activity implements
 
 		// Acquire a reference to the system Location Manager
 		try {
-
-		String bestProvider;
-		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		bestProvider = locationManager.getBestProvider(criteria, false);
-		Location location = locationManager.getLastKnownLocation(bestProvider);
+			//Location set
+			String bestProvider;
+			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+			Criteria criteria = new Criteria();
+			bestProvider = locationManager.getBestProvider(criteria, false);
+			Location location = locationManager.getLastKnownLocation(bestProvider);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		spinner = (Spinner) findViewById(R.id.spinner1);
 		spinner.setOnItemSelectedListener(this);
-
+		
+		//System.out.println(location.getLatitude());
 		String geoLocation = Double.toString(latitude) + ","
 				+ Double.toString(longitude);
 
