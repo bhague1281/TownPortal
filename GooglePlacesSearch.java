@@ -30,7 +30,8 @@ public class GooglePlacesSearch {
 	public String location = "30.205971,-85.858862";
 	public String radius = "16100"; // in meters - about 10 miles
 	public String types;
-	public String sensor = "false";
+	//this sensor should be set to true - Brian - Saturday Night Special
+	public String sensor = "true";
 	public String APIKey = "AIzaSyBz7p2E8oDDBYJYvL3RM3cFjHCJDkpuqwU";
 	public String reference = null;
 	BitmapFactory.Options bmOptions;
@@ -102,7 +103,6 @@ public class GooglePlacesSearch {
 
 		returnVal = "https://maps.googleapis.com/maps/api/place/details/json?reference=";
 		returnVal += placeRef + "&sensor=" + sensor + "&key=" + APIKey;
-
 		return (returnVal);
 	}
 
@@ -121,14 +121,12 @@ public class GooglePlacesSearch {
 
 		PlaceDetail placeDetail = null;
 		String urlString = GetPlaceDetailUrl(placeRef);
-
 		try {
 			String json = getJSON(urlString);
 			JSONObject object = new JSONObject(json);
 			JSONObject result = object.getJSONObject("result");
-
 			placeDetail = PlaceDetail.jsonToPlaceDetail(result);
-
+			
 		} catch (JSONException ex) {
 			ex.printStackTrace();
 		}
