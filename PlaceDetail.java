@@ -3,10 +3,17 @@
  * Class used to hold GooglePlace Detail data 
  */
 
+/* Changes by Saturday Night Special:
+ * 
+ * Brian: added a rating string and modified jsonToPlaceDetail to get
+ * the rating from the JSON object.
+ */
+
 package com.android.electricsheep.townportal;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +27,7 @@ public class PlaceDetail {
 	private String website = null;
 	private String photoRef = null;
 	private String siteName = null;
+	private String rating = null; //variable addition - SNS
 	private Bitmap sitePhoto = null;
 
 	public String getPhoneNumber() {
@@ -65,7 +73,6 @@ public class PlaceDetail {
 	static PlaceDetail jsonToPlaceDetail(JSONObject result) {
 		
 		PlaceDetail placeDetail = null;
-		
 		try {
 			placeDetail = new PlaceDetail();
 
@@ -94,6 +101,12 @@ public class PlaceDetail {
 				String siteName = result.getString("name");
 				placeDetail.setSiteName(siteName);
 			}
+			
+			//additional query, but the rating attribute is currently not being fetched - SNS
+			if(!(result.isNull("rating"))) {
+				String rating = result.getString("rating");
+				placeDetail.setRating(rating);
+			}
 
 		} catch (JSONException ex) {
 			Logger.getLogger(Place.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,6 +120,15 @@ public class PlaceDetail {
 
 	public void setSitePhoto(Bitmap sitePhoto) {
 		this.sitePhoto = sitePhoto;
+	}
+	
+	//additional getter/setter methods - SNS
+	public String getRating() {
+		return rating;
+	}
+	
+	public void setRating(String rating) {
+		this.rating = rating;
 	}
 
 }
