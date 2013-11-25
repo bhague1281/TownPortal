@@ -1,10 +1,11 @@
 /* MainActivity.java
  * Electric Sheep - K.Hall, C.Munoz, A.Reaves
+ * Updated Fall 2013 by: Saturday Night Special - J. Starling, B. Hague, S. Filis, J. Sweat
  * Main navigation page of HomeTown Portal application which displays 
  *   categories for user to select
  */
 
-package com.android.electricsheep.townportal;
+
 
 import java.util.Vector;
 
@@ -106,6 +107,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			
 			Bundle b = new Bundle();
 			b.putString("url", "http://sports-ak.espn.go.com/espn/rss/news");
+			// espn.com is the placeholder for the currently not working News Herald Feed
 			
 			rssNewsIntent.putExtra("android.intent.extra.INTENT", b);
 			
