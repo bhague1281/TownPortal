@@ -102,9 +102,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			startActivity(browserIntentEmploy);
 			break;
 		case R.id.btnNews:
-			Intent browserIntentNews = new Intent(Intent.ACTION_VIEW,
-					Uri.parse("http://m.newsherald.com"));
-			startActivity(browserIntentNews);
+			Intent rssNewsIntent = new Intent(this, RSSReader.class);
+			
+			Bundle b = new Bundle();
+			b.putString("url", "http://sports-ak.espn.go.com/espn/rss/news");
+			
+			rssNewsIntent.putExtra("android.intent.extra.INTENT", b);
+			
+			startActivity(rssNewsIntent);
 			break;
 		default:
 			break;
