@@ -102,10 +102,11 @@ public class PlaceDetail {
 				placeDetail.setSiteName(siteName);
 			}
 			
-			//additional query, but the rating attribute is currently not being fetched - SNS
+			//SNS-Joe Sweat: Now will grab the number switch it to a string and send it through.
 			if(!(result.isNull("rating"))) {
-				String rating = result.getString("rating");
-				placeDetail.setRating(rating);
+				Double rtn = result.getDouble("rating");
+                       		String rating = "Average google Rating: " + Double.toString(rtn);
+                                placeDetail.setRating(rating);
 			}
 
 		} catch (JSONException ex) {
