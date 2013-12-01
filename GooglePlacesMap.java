@@ -1,3 +1,5 @@
+package com.android.electricsheep.townportal;
+
 import java.util.ArrayList;
 
 import android.app.Activity;
