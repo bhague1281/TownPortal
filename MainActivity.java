@@ -107,7 +107,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			
 			Bundle b = new Bundle();
 			b.putString("url", "http://www.wjhg.com/home/headlines/index.rss2");
-			// wjhg.com is the weblite for Panama City's local channel 2 news affiliate and
+			// wjhg.com is the website for Panama City's local channel 2 news affiliate and
 			// a placeholder for the currently not working News Herald Feed
 			
 			rssNewsIntent.putExtra("android.intent.extra.INTENT", b);
