@@ -106,8 +106,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			Intent rssNewsIntent = new Intent(this, RSSReader.class);
 			
 			Bundle b = new Bundle();
-			b.putString("url", "http://sports-ak.espn.go.com/espn/rss/news");
-			// espn.com is the placeholder for the currently not working News Herald Feed
+			b.putString("url", "http://www.wjhg.com/home/headlines/index.rss2");
+			// wjhg.com is the weblite for Panama City's local channel 2 news affiliate and
+			// a placeholder for the currently not working News Herald Feed
 			
 			rssNewsIntent.putExtra("android.intent.extra.INTENT", b);
 			
