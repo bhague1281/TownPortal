@@ -192,6 +192,7 @@ public class GooglePlacesMap extends Activity implements
 			placeDetailIntent.putExtra("website", placeDetail.getWebsite());
 			placeDetailIntent.putExtra("photo", placePhoto.getPhoto());
 			placeDetailIntent.putExtra("rating", placeDetail.getRating());//needed this for rating
+									 	     //added by Joe Sweat
 
 			startActivity(placeDetailIntent);
 		}
