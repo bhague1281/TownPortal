@@ -39,7 +39,7 @@ public class PlaceDetailActivity extends Activity {
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.custom_title);
 		setContentView(R.layout.activity_place_detail);
-                Adv();
+                Adv(); //advertisement add in by Joe Sweat
 
 		
 		// Set Place detail TextViews
@@ -86,7 +86,7 @@ public class PlaceDetailActivity extends Activity {
 		return true;
 	}
 	
-	public void Adv(){
+	public void Adv(){ //advertisement by Joe Sweat
         	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
    		alertDialogBuilder.setTitle("Florida State University - Computer Science");
 		alertDialogBuilder.setMessage("Would you like to learn how to create apps like this one? Visit us at http://www.cs.fsu.edu/ to take the first step!");
