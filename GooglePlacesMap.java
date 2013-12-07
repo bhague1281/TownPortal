@@ -1,17 +1,20 @@
+
+/* GooglePlacesMap.java
+ * Electric Sheep - K.Hall, C.Munoz, A.Reaves
+ * Used with Google Maps activity page to display map of user selected category
+ *   and ListView of places
+ */
+
 package com.android.electricsheep.townportal;
 
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.webkit.WebView;
@@ -19,18 +22,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class GooglePlacesMap extends Activity implements
 		AdapterView.OnItemSelectedListener, ListView.OnItemClickListener,
 		View.OnClickListener {
 	
-	
-	
+	//GpsTracker gps; 
+		
 	public double latitude = 30.205971;
 	public double longitude = -85.858862;
-
-	LocationManager locationManager;
 	public String type = "restaurant";
 	public int milesAway = 10;
 	private boolean firstTime = true;
@@ -44,34 +44,35 @@ public class GooglePlacesMap extends Activity implements
 	ArrayAdapter<Place> arrayAdapter = null;
 
 	private Spinner spinner;
-	private Location locationDetails;
 	private String geoLocation;
 	private WebView mapView;
+	
+	LocationManager locationmanager;
+	Location location;
+	
+	private GPSTracker gps;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
+
 		Bundle b = getIntent().getExtras();
 		type = b.getString("type");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
+		
 
-		// Acquire a reference to the system Location Manager
-		try {
-			//Location set
-			String bestProvider;
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			Criteria criteria = new Criteria();
-			bestProvider = locationManager.getBestProvider(criteria, false);
-			Location location = locationManager.getLastKnownLocation(bestProvider);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+        try {
+        	gps = new GPSTracker(GooglePlacesMap.this);	
+			
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
+		
+		
 		spinner = (Spinner) findViewById(R.id.spinner1);
 		spinner.setOnItemSelectedListener(this);
-		
-		//System.out.println(location.getLatitude());
+
 		String geoLocation = Double.toString(latitude) + ","
 				+ Double.toString(longitude);
 
@@ -107,7 +108,6 @@ public class GooglePlacesMap extends Activity implements
 	private String getMapHTML(double latitude, double longitude, String type,
 			int milesAway) {
 		String radius;
-		final int meters = 1609;
 		radius = Integer.toString(1609 * milesAway);
 		String googleCoordinates = Double.toString(latitude) + ","
 				+ Double.toString(longitude);
@@ -218,24 +218,23 @@ public class GooglePlacesMap extends Activity implements
 
 		// "My Location" is one of the string items of the drop-down selector
 		if (spinner.getSelectedItem().toString().equals("My Location")) {
-			// update latitude and longitude coordinates for each
-			if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-				locationDetails = locationManager
-						.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-				latitude = locationDetails.getLatitude();
-				longitude = locationDetails.getLongitude();
-				geoLocation = Double.toString(latitude) + ","
-						+ Double.toString(longitude);
+				//check if a location can be fetched. if so, get the coordinates
+				if(gps.canGetLocation()){
+					latitude = gps.getLatitude();
+					longitude = gps.getLongitude();
+					geoLocation = Double.toString(gps.getLatitude()) + ","
+						+ Double.toString(gps.getLongitude());
 
-				gpsearch = new GooglePlacesSearch(type, geoLocation);
-				// starting the AsynTask ListViewTask
-				new ListViewTask().execute();
+					gpsearch = new GooglePlacesSearch(type, geoLocation);
+					// starting the AsynTask ListViewTask
+					new ListViewTask().execute();
+				} else{
+					//show settings
+					gps.showSettingsAlert();
+				}
 
 			} else {
-				Toast toast = Toast.makeText(this,
-						"error: GPS mode not enabled", 2000);
-				toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-				toast.show();
+				
 				return;
 			} 
 			
@@ -250,7 +249,7 @@ public class GooglePlacesMap extends Activity implements
 				e.printStackTrace();
 
 			}
-		} 
+		 
 
 		if (spinner.getSelectedItem().toString().equals("Panama City")) {
 			// update latitude and longitude coordinates for each
