@@ -3,6 +3,7 @@
  * Electric Sheep - K.Hall, C.Munoz, A.Reaves
  * Used with Google Maps activity page to display map of user selected category
  *   and ListView of places
+ * Altered to show rating by SNS-Joe Sweat
  */
 
 package com.android.electricsheep.townportal;
@@ -195,6 +196,8 @@ public class GooglePlacesMap extends Activity implements
 			placeDetailIntent.putExtra("phonenumber",placeDetail.getPhoneNumber());
 			placeDetailIntent.putExtra("website", placeDetail.getWebsite());
 			placeDetailIntent.putExtra("photo", placePhoto.getPhoto());
+			placeDetailIntent.putExtra("rating", placeDetail.getRating());//needed this for rating
+									 	     //added by Joe Sweat
 
 			startActivity(placeDetailIntent);
 		}

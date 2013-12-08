@@ -4,6 +4,12 @@
  *    when user clicks on Place from MapActivity page
  */
 
+/* Changes by Saturday Night Special:
+ * 
+ * Brian: added a rating TextView in order to display the rating
+ * from PlaceDetail
+ */
+
 package com.android.electricsheep.townportal;
 
 import android.app.Activity;
@@ -18,7 +24,8 @@ import android.widget.TextView;
 
 public class PlaceDetailActivity extends Activity {
 
-	TextView nameTextView, addressTextView, phoneNumberTextView, websiteTextView;
+	//added ratingTextView - SNS
+	TextView nameTextView, addressTextView, phoneNumberTextView, websiteTextView, ratingTextView;
 	ImageView photoImageView;
 
 
@@ -32,6 +39,7 @@ public class PlaceDetailActivity extends Activity {
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.custom_title);
 		setContentView(R.layout.activity_place_detail);
+                Adv(); //advertisement add in by Joe Sweat
 
 		
 		// Set Place detail TextViews
@@ -39,6 +47,7 @@ public class PlaceDetailActivity extends Activity {
 		addressTextView = (TextView) findViewById(R.id.addressText);
 		phoneNumberTextView = (TextView) findViewById(R.id.phoneNumberText);
 		websiteTextView = (TextView) findViewById(R.id.websiteText);
+		ratingTextView = (TextView) findViewById(R.id.ratingText); //SNS
 		photoImageView = (ImageView) findViewById(R.id.photoImage);
 
 		// Set Place detail variables
@@ -46,12 +55,14 @@ public class PlaceDetailActivity extends Activity {
 		String mAddress = getIntent().getExtras().getString("address");
 		String mPhoneNumber = getIntent().getExtras().getString("phonenumber");
 		String mWebsite = getIntent().getExtras().getString("website");
+		String mRating = getIntent().getExtras().getString("rating"); //SNS
 		Bitmap mPhoto = getIntent().getParcelableExtra("photo");
 
 		// Set TextViews
 		nameTextView.setText(mName);
 		addressTextView.setText(mAddress);
 		phoneNumberTextView.setText(mPhoneNumber);
+		ratingTextView.setText(mRating);
 		websiteTextView.setClickable(true);
 		websiteTextView.setMovementMethod(LinkMovementMethod.getInstance());
 		
@@ -74,6 +85,14 @@ public class PlaceDetailActivity extends Activity {
 		getMenuInflater().inflate(R.menu.place_detail, menu);
 		return true;
 	}
+	
+	public void Adv(){ //advertisement by Joe Sweat
+        	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+   		alertDialogBuilder.setTitle("Florida State University - Computer Science");
+		alertDialogBuilder.setMessage("Would you like to learn how to create apps like this one? Visit us at http://www.cs.fsu.edu/ to take the first step!");
+    		AlertDialog alertDialog = alertDialogBuilder.create();
+    		alertDialog.show();
+   }
 
 
 }
