@@ -1,10 +1,11 @@
 /* MainActivity.java
  * Electric Sheep - K.Hall, C.Munoz, A.Reaves
+ * Updated Fall 2013 by: Saturday Night Special - J. Starling, B. Hague, S. Filis, J. Sweat
  * Main navigation page of HomeTown Portal application which displays 
  *   categories for user to select
  */
 
-package com.android.electricsheep.townportal;
+
 
 import java.util.Vector;
 
@@ -102,9 +103,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			startActivity(browserIntentEmploy);
 			break;
 		case R.id.btnNews:
-			Intent browserIntentNews = new Intent(Intent.ACTION_VIEW,
-					Uri.parse("http://m.newsherald.com"));
-			startActivity(browserIntentNews);
+			Intent rssNewsIntent = new Intent(this, RSSReader.class);
+			
+			Bundle b = new Bundle();
+			b.putString("url", "http://www.wjhg.com/home/headlines/index.rss2");
+			// wjhg.com is the website for Panama City's local channel 2 news affiliate and
+			// a placeholder for the currently not working News Herald Feed
+			
+			rssNewsIntent.putExtra("android.intent.extra.INTENT", b);
+			
+			startActivity(rssNewsIntent);
 			break;
 		default:
 			break;
