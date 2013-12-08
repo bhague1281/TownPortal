@@ -4,6 +4,10 @@
  * Used with Google Maps activity page to display map of user selected category
  *   and ListView of places
  * Altered to show rating by SNS-Joe Sweat
+ * 
+ * Altered "My Location" so that it correctly obtains the user's current location
+ * without crashing. Also made the call to GooglePlacesSearch pass a smaller radius
+ * to display results that are close to the user's current location. - Brian Hague
  */
 
 package com.android.electricsheep.townportal;
@@ -28,13 +32,12 @@ public class GooglePlacesMap extends Activity implements
 		AdapterView.OnItemSelectedListener, ListView.OnItemClickListener,
 		View.OnClickListener {
 	
-	//GpsTracker gps; 
-		
 	public double latitude = 30.205971;
 	public double longitude = -85.858862;
 	public String type = "restaurant";
 	public int milesAway = 10;
 	private boolean firstTime = true;
+    String closeRadius = "3220";
 
 	GooglePlacesSearch gpsearch = null;
 	ArrayList<Place> arrayList = null;
@@ -55,21 +58,18 @@ public class GooglePlacesMap extends Activity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
 
 		Bundle b = getIntent().getExtras();
 		type = b.getString("type");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 		
-
         try {
         	gps = new GPSTracker(GooglePlacesMap.this);	
 			
         } catch (Exception e) {
                 e.printStackTrace();
         }
-		
 		
 		spinner = (Spinner) findViewById(R.id.spinner1);
 		spinner.setOnItemSelectedListener(this);
@@ -95,7 +95,6 @@ public class GooglePlacesMap extends Activity implements
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -103,7 +102,6 @@ public class GooglePlacesMap extends Activity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.map, menu);
 		return true;
-
 	}
 
 	private String getMapHTML(double latitude, double longitude, String type,
@@ -142,7 +140,6 @@ public class GooglePlacesMap extends Activity implements
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -163,10 +160,8 @@ public class GooglePlacesMap extends Activity implements
 		@Override
 		protected void onPostExecute(PlaceDetail theDetail) {
 			placeDetail = theDetail;
-
 			// starting the AsyncTask PhotoTask
 			new PhotoTask(placeDetail.getPhotoRef()).execute();
-
 		}
 	}
 
@@ -222,38 +217,33 @@ public class GooglePlacesMap extends Activity implements
 		// "My Location" is one of the string items of the drop-down selector
 		if (spinner.getSelectedItem().toString().equals("My Location")) {
 				//check if a location can be fetched. if so, get the coordinates
-				if(gps.canGetLocation()){
+				if(gps.canGetLocation()) {
 					latitude = gps.getLatitude();
 					longitude = gps.getLongitude();
 					geoLocation = Double.toString(gps.getLatitude()) + ","
 						+ Double.toString(gps.getLongitude());
-
-					gpsearch = new GooglePlacesSearch(type, geoLocation);
+					gpsearch = new GooglePlacesSearch(type, geoLocation, closeRadius);
 					// starting the AsynTask ListViewTask
 					new ListViewTask().execute();
-				} else{
+				} else {
 					//show settings
 					gps.showSettingsAlert();
 				}
 
-			} else {
-				
-				return;
-			} 
-			
+		} else {	
+			return;
+		} 
+		try {
+			mapView.stopLoading();
+			mapView.loadData(
+					getMapHTML(latitude, longitude, type, milesAway),
+					"text/html", "UTF-8");
 
-			try {
-				mapView.stopLoading();
-				mapView.loadData(
-						getMapHTML(latitude, longitude, type, milesAway),
-						"text/html", "UTF-8");
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-
-			}
-		 
-
+		}
+		
 		if (spinner.getSelectedItem().toString().equals("Panama City")) {
 			// update latitude and longitude coordinates for each
 			latitude = 30.205971;
@@ -268,7 +258,6 @@ public class GooglePlacesMap extends Activity implements
 				// starting the AsynTask ListViewTask
 				new ListViewTask().execute();
 			}
-			
 			
 			try {
 				mapView.stopLoading();
