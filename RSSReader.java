@@ -1,24 +1,38 @@
+package com.android.electricsheep.townportal;
+
 // Stuart Filis - Saturday Night Special
 
 // Source code found at http://www.ibm.com/developerworks/opensource/tutorials/os-eclipse-android/
 // used for creation of RSS Reader application
 
+/*
+ * Brian Hague - Source for AsyncTask classes from Google: http://developer.android.com/training/articles/perf-anr.html
+ * (used more as inspiration than anything)
+ */
+
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+
 import java.util.List;
 import java.util.Vector;
+
 import android.view.*;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener; 
+
 import com.android.electricsheep.townportal.ShowDescription;
+
 import java.net.URL;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
@@ -30,8 +44,8 @@ public class RSSReader extends Activity implements OnItemClickListener
 {
 
 	public final String tag = "RSSReader";
-   public String rssFeedOfChoice = null;
-	private RSSFeed feed = null;
+    public String rssFeedOfChoice = null;
+    private RSSFeed feed = null;
 	
 	/** Called when the activity is first created. */
 
@@ -74,24 +88,10 @@ public class RSSReader extends Activity implements OnItemClickListener
     		// setup the url
     	   URL url = new URL(urlToRssFeed);
 
-           // create the factory
-           SAXParserFactory factory = SAXParserFactory.newInstance();
-           // create a parser
-           SAXParser parser = factory.newSAXParser();
-
-           // create the reader (scanner)
-           XMLReader xmlreader = parser.getXMLReader();
-           // instantiate our handler
-           RSSHandler theRssHandler = new RSSHandler();
-           // assign our handler
-           xmlreader.setContentHandler(theRssHandler);
            // get our data via the url class
-           final InputSource is = new InputSource(url.openStream());
-           
-           // perform the synchronous parse           
-           xmlreader.parse(is);
-           // get the results - should be a fully populated RSSFeed instance, or null on error
-           return theRssHandler.getFeed();
+           InputSource is = new DownloadURLTask().execute(url).get();
+           // perform the synchronous parse
+           return new ParseTask().execute(is).get();
     	}
     	catch (Exception ee)
     	{
@@ -167,6 +167,75 @@ public class RSSReader extends Activity implements OnItemClickListener
          startActivity(itemintent);
      }
 } // end class RSSReader
+
+class DownloadURLTask extends AsyncTask<URL, Integer, InputSource> {
+    // Do the long-running work in here
+    protected InputSource doInBackground(URL... urls) {
+        if (urls.length == 1)
+        {
+        	try
+        	{
+        		InputSource is = new InputSource(urls[0].openStream());
+        		return is;
+        	}
+        	catch (Exception ee)
+        	{
+        		// if we have a problem, simply return null
+        		return null;
+        	}
+        }
+		return null;
+    }
+
+    // This is called each time you call publishProgress()
+    protected void onProgressUpdate(Integer... progress) {
+    }
+
+    // This is called when doInBackground() is finished
+    protected void onPostExecute(InputSource result) {
+    	
+    }
+}
+
+class ParseTask extends AsyncTask<InputSource, Integer, RSSFeed> {
+    // Do the long-running work in here
+    protected RSSFeed doInBackground(InputSource... sources) {
+        if (sources.length == 1)
+        {
+        	try
+        	{
+        		// create the factory
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                // create a parser
+                SAXParser parser = factory.newSAXParser();
+        		// create the reader (scanner)
+                XMLReader xmlreader = parser.getXMLReader();
+                // instantiate our handler
+                RSSHandler theRssHandler = new RSSHandler();
+                // assign our handler
+                xmlreader.setContentHandler(theRssHandler);
+                xmlreader.parse(sources[0]);
+                // get the results - should be a fully populated RSSFeed instance, or null on error
+                return theRssHandler.getFeed();
+        	}
+        	catch (Exception ee)
+        	{
+        		// if we have a problem, simply return null
+        		return null;
+        	}
+        }
+		return null;
+    }
+
+    // This is called each time you call publishProgress()
+    protected void onProgressUpdate(Integer... progress) {
+    }
+
+    // This is called when doInBackground() is finished
+    protected void onPostExecute(RSSFeed result) {
+    	
+    }
+}
 
 
 class RSSHandler extends DefaultHandler 
@@ -319,7 +388,7 @@ class RSSFeed
 	
 	RSSFeed()
 	{
-		_itemlist = new Vector(0); 
+		_itemlist = new Vector<RSSItem>(0); 
 	}
 	int addItem(RSSItem item)
 	{
@@ -331,7 +400,7 @@ class RSSFeed
 	{
 		return _itemlist.get(location);
 	}
-	List getAllItems()
+	List<RSSItem> getAllItems()
 	{
 		return _itemlist;
 	}
