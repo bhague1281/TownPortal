@@ -2,6 +2,12 @@
  * Electric Sheep - K.Hall, C.Munoz, A.Reaves
  * Uses JSON query to retrieve GooglePlaces information 
  *    about places with type selected by user
+ *    
+ * Saturday Night Special- Brian Hague
+ * Made a few minor changes such as deleting unused variables.
+ * Added a second constructor for the UrbanSpoon functionality.
+ * A query can take place by changing the radius, allowing one to
+ * tailor their results according to their location.
  */
 
 package com.android.electricsheep.townportal;
@@ -40,6 +46,13 @@ public class GooglePlacesSearch {
 		types = placeType;
 		location = geoLocation;
 
+	}
+	
+	//SNS- New constructor adding an optional radius parameter
+	public GooglePlacesSearch(String placeType, String geoLocation, String aRadius) {
+		types = placeType;
+		location = geoLocation;
+		radius = aRadius;
 	}
 
 	public String FormGoogleSearchURL() {
