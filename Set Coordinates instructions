@@ -1,4 +1,0 @@
-1)	in eclipse go to : Window > Open Perspective > Other… > DDMS from the Eclipse menu.
-2) With the emulator already running, you should see a screen that lets you select Manual, then radio selection Decimal,
-then enter in some googled coordinates in long/latitude and click send.  
-3) clean/run the code.
